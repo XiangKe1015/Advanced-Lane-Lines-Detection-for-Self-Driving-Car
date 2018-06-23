@@ -66,7 +66,7 @@ def cal_undistort(image,cal_file='camera_cal/dist_pickle.p'):
 
 I used a combination of color and gradient thresholds to generate a binary image (thresholding functions/steps at lines 54 through 137 in `helpers.py`).  Here's an example of my output for this step.  
 
-![alt text][image3]
+![avatar][output_images/Binary Image.jpg]
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 

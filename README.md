@@ -133,9 +133,9 @@ I implemented this step in lines 288 through 306 in my code in `helpers.py` in t
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-Here's a [link to my video result](./test_videos_output/project_video.mp4)
+This same video can also be found at:  [project_video_out.mp4](./test_videos_output/project_video_out.mp4)
 
-![alt text][video1]
+Here's a [link to my video result](./test_videos_output/project_video.mp4)
 
 ---
 

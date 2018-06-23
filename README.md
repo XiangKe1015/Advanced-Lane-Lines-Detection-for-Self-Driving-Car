@@ -81,10 +81,10 @@ This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 200,715       | 280,715       | 
-| 1150,715      | 950,715       |
-| 620,450       | 280,0         |
-| 725,450       | 950,0         |
+| 200, 715      | 280, 715      | 
+| 1150, 715     | 950, 715      |
+| 620, 450      | 280, 0        |
+| 725, 450      | 950, 0        |
 
 I verified that my perspective transform onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image, shown as below:
 

@@ -94,7 +94,6 @@ I verified that my perspective transform onto a test image and its warped counte
 
 I did this in lines 151 through 225 in my code in `helpers.py`.First I take a histogram of the bottom half of the image, find the starting point for the left and right lines, then implement Sliding Windows to find pixels for left and right lane, then fit a second order polynomial for left and right lane line. The outcome shown as below:
 
-![alt text][image5]
 ![alt text][image6]
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
@@ -136,6 +135,7 @@ I implemented this step in lines 288 through 306 in my code in `helpers.py` in t
 
 Here's a [link to my video result](./test_videos_output/project_video.mp4)
 ![alt text][video1]
+
 ---
 
 ### Discussion

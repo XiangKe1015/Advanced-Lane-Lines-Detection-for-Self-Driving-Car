@@ -38,7 +38,7 @@ You're reading it!
 
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-The code for this step is contained in lines 7 through 42 of the file called `helpers.py`).  
+The code for this step is contained in lines 7 through 42 of the file called `helpers.py`, which included all the functions.
 
 I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
 
@@ -52,57 +52,79 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 
 To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
 ![alt text][image2]
+```
+def cal_undistort(image,cal_file='camera_cal/dist_pickle.p'):
+    # Use cv2.calibrateCamera() and cv2.undistort()
+    dist_pickle = pickle.load( open( cal_file, "rb" ) )
+    mtx = dist_pickle["mtx"]
+    dist = dist_pickle["dist"]
+    undist = cv2.undistort(image,mtx,dist,None,mtx)  
+    return undist
+```
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  
+I used a combination of color and gradient thresholds to generate a binary image (thresholding functions/steps at lines 54 through 137 in `helpers.py`).  Here's an example of my output for this step.  
 
 ![alt text][image3]
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+The code for my perspective transform includes a function called `corners_unwarp()`, which appears in lines 139 through 149 in the file `helpers.py`.  The `corners_unwarp()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
 
 ```python
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
+src=np.float32([[200,715],[1150,715],[620,450],[725,450]]) 
+dst=np.float32([[280,715], [950,715],[280,0], [950,0]])
 ```
 
 This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
+| 200,715       | 280,715       | 
+| 1150,715      | 950,715       |
+| 620,450       | 280,0         |
+| 725,450       | 950,0         |
 
-I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
+I verified that my perspective transform onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image, shown as below:
 
 ![alt text][image4]
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+I did this in lines 151 through 225 in my code in `helpers.py`.First I take a histogram of the bottom half of the image, find the starting point for the left and right lines, then implement Sliding Windows to find pixels for left and right lane, then fit a second order polynomial for left and right lane line. The outcome shown as below:
 
 ![alt text][image5]
 ![alt text][image6]
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+I did this in lines 268 through 286 in my code in `helpers.py`.
+First converting image x and y values to real world space, then fit new polynomials to x,y in world space, calculate the new radii of curvature.
+```
+def find_curvature(binary_warped):
+    ploty, left_fitx, right_fitx=find_lanelines(binary_warped)
+    # Define conversions in x and y from pixels space to meters
+    ym_per_pix = 30/720 # meters per pixel in y dimension
+    xm_per_pix = 3.7/700 # meters per pixel in x dimension
+
+    y_eval = np.max(ploty)
+    # Fit new polynomials to x,y in world space
+    left_fit_cr = np.polyfit(ploty*ym_per_pix, left_fitx*xm_per_pix, 2)
+    right_fit_cr = np.polyfit(ploty*ym_per_pix, right_fitx*xm_per_pix, 2)
+    # Calculate the new radii of curvature
+    left_curverad = ((1 + (2*left_fit_cr[0]*y_eval*ym_per_pix + left_fit_cr[1])**2)**1.5) / np.absolute(2*left_fit_cr[0])
+    right_curverad = ((1 + (2*right_fit_cr[0]*y_eval*ym_per_pix + right_fit_cr[1])**2)**1.5) / np.absolute(2*right_fit_cr[0])
+    # Now our radius of curvature is in meters
+    img_middle = (left_fitx[-1] + right_fitx[-1])//2
+    veh_pos = binary_warped.shape[1]//2
+    dx = (veh_pos - img_middle)*xm_per_pix # Positive if on right, Negative on left
+    return left_curverad, right_curverad, dx
+```
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+I implemented this step in lines 288 through 306 in my code in `helpers.py` in the function `vis()`.  Here is an example of my result on a test image:
 
 ![alt text][image7]
 
@@ -113,11 +135,13 @@ I implemented this step in lines # through # in my code in `yet_another_file.py`
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
 Here's a [link to my video result](./test_videos_output/project_video.mp4)
-
+![alt text][video1]
 ---
 
 ### Discussion
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+Although the pipeline works with the project video, but it's better to check if curvature values make sense, and  make sanity check about diffrent video clip to determine if current dectection problematic, and if problematic, we actually may can skip current detection data, and use last frame or next frame, to make the pipeline more roboustic.
+
+The pipeline not works well with chanellge video due to the lane lines color not steady, and the light also changes, so maybe it's still need refine the image pre-processing method.

@@ -15,7 +15,7 @@ The goals / steps of this project are the following:
 
 [image1]: ./output_images/Undistorted_Image.jpg "ChessBoard Undistorted Example"
 [image2]: ./output_images/Real_Undistorted_Image.jpg "Example of Distortion corrected image"
-[image3]: ./output_images/Binary Image.jpg "Thresholding Example"
+[image3]: ./output_images/Binary_Image.jpg "Thresholding Example"
 [image4]: ./output_images/Transformed_Image.jpg "Perspective Transform Example"
 [image5]: ./output_images/lane_lines.jpg "Histogram Plot"
 [image6]: ./output_images/lane_lines.jpg "Fitted Lane Line Example"
@@ -66,7 +66,7 @@ def cal_undistort(image,cal_file='camera_cal/dist_pickle.p'):
 
 I used a combination of color and gradient thresholds to generate a binary image (thresholding functions/steps at lines 54 through 137 in `helpers.py`).  Here's an example of my output for this step.  
 
-![avatar](/output_images/Binary Image.jpg)
+![alt text][image3]
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 

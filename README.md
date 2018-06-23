@@ -19,7 +19,7 @@ The goals / steps of this project are the following:
 [image4]: ./output_images/Transformed_Image.jpg "Perspective Transform Example"
 [image5]: ./output_images/lane_lines.jpg "Histogram Plot"
 [image6]: ./output_images/lane_lines.jpg "Fitted Lane Line Example"
-[image7]: ./output_images/test1.jpg "Result Example"
+[image7]: ./output_images/test4.jpg "Result Example"
 [video1]: ./test_videos_output/project_video.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
@@ -134,6 +134,7 @@ I implemented this step in lines 288 through 306 in my code in `helpers.py` in t
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
 Here's a [link to my video result](./test_videos_output/project_video.mp4)
+
 ![alt text][video1]
 
 ---
